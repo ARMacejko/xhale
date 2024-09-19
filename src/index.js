@@ -1,17 +1,52 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client'; // This is the new import for createRoot
-import './index.css'; // Assuming this file exists (It didn't)
-import PackageTagForm from './PackageTagForm'; // Ensure this path is correct
+import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom/client';
+import { supabase } from './supabaseClient'; // Make sure Supabase is correctly initialized
 
-// Create the root using the new API
+const App = () => {
+  const [session, setSession] = useState(null);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const session = supabase.auth.session();
+    setSession(session);
+
+    // Listen for changes to the session
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
+
+  const handleLogin = async () => {
+    // Redirect to Google OAuth login
+    const { error } = await supabase.auth.signIn({
+      provider: 'google',
+    });
+
+    if (error) {
+      console.log('Error logging in: ', error.message);
+    }
+  };
+
+  return (
+    <div>
+      {session ? (
+        <div>
+          <h1>Welcome back!</h1>
+          <p>You're logged in!</p>
+        </div>
+      ) : (
+        <div>
+          <h1>Please Log In</h1>
+          <button onClick={handleLogin}>Log in with Google</button>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-// Render the App component inside the root
 root.render(
   <React.StrictMode>
-    <div>
-      <h1>HEY</h1>
-      <PackageTagForm />
-    </div>
+    <App />
   </React.StrictMode>
 );
