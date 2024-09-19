@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client'; // This is the new import for createRoot
-import './index.css'; // Assuming this file exists
+import './index.css'; // Assuming this file exists (It didn't)
 import PackageTagForm from './PackageTagForm'; // Ensure this path is correct
 
 // Create the root using the new API
