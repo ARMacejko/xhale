@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { supabase } from './supabaseClient'; // Ensure Supabase is correctly initialized
+import { supabase } from './supabaseClient'; // Import the Supabase client
 
 const PackageTagForm = () => {
   const [packageTag, setPackageTag] = useState('');
@@ -8,15 +8,15 @@ const PackageTagForm = () => {
   const [error, setError] = useState('');
   const [message, setMessage] = useState('');
 
-  // Function to handle form submission
+  // Function to handle package tag submission
   const handlePackageSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setMessage('');
 
-    // Check if package tag exists in the database
+    // Query Supabase to check if the package tag exists
     const { data, error } = await supabase
-      .from('packages') // Replace with your actual packages table
+      .from('packages') // Adjust the table name
       .select('*')
       .eq('package_number', packageTag);
 
@@ -26,23 +26,23 @@ const PackageTagForm = () => {
     }
 
     if (data.length > 0) {
-      // Package tag exists, display related batch data
-      setMessage(`Package found. Batch: ${data[0].batch_id}`); // Display related batch ID or other details
+      // Package tag exists, display the related batch data
+      setMessage(`Package found. Batch: ${data[0].batch_id}`); // Adjust with your table structure
     } else {
       // Package tag not found, show batch input
       setShowBatchInput(true);
     }
   };
 
-  // Function to handle batch submission if package tag not found
+  // Function to handle batch submission if package not found
   const handleBatchSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setMessage('');
 
-    // Insert the batch and package tag into the database
+    // Insert a new batch into the database
     const { data: batchData, error: batchError } = await supabase
-      .from('batches') // Replace with your actual batches table
+      .from('batches') // Adjust the table name
       .insert([{ batch_number: batchTag }]);
 
     if (batchError) {
@@ -50,11 +50,11 @@ const PackageTagForm = () => {
       return;
     }
 
-    const newBatchId = batchData[0].id; // Assuming the inserted batch has an 'id' field
+    const newBatchId = batchData[0].id; // Assuming batch ID is returned
 
-    // Now, insert the package tag and link it to the new batch
+    // Now insert the package tag and link it to the new batch
     const { error: packageError } = await supabase
-      .from('packages') // Replace with your actual packages table
+      .from('packages') // Adjust the table name
       .insert([{ package_number: packageTag, batch_id: newBatchId }]);
 
     if (packageError) {
@@ -63,7 +63,7 @@ const PackageTagForm = () => {
     }
 
     setMessage('Batch and package tag created successfully!');
-    setShowBatchInput(false); // Hide the batch input
+    setShowBatchInput(false);
   };
 
   return (
@@ -85,10 +85,10 @@ const PackageTagForm = () => {
         <form onSubmit={handleBatchSubmit}>
           <input
             type="text"
-            value={batchTag}
-            onChange={(e) => setBatchTag(e.target.value)}
-            placeholder="Enter batch tag"
-            required
+          value={batchTag}
+          onChange={(e) => setBatchTag(e.target.value)}
+          placeholder="Enter batch tag"
+          required
           />
           <button type="submit">Submit Batch Tag</button>
         </form>

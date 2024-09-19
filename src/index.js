@@ -1,8 +1,17 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client'; // This is the new import for createRoot
+import './index.css'; // Assuming this file exists
+import PackageTagForm from './PackageTagForm'; // Ensure this path is correct
 
-const App = () => {
-  return <h1>Hello, Xhale!</h1>;
-};
+// Create the root using the new API
+const root = ReactDOM.createRoot(document.getElementById('root'));
 
-ReactDOM.render(<App />, document.getElementById('root'));
+// Render the App component inside the root
+root.render(
+  <React.StrictMode>
+    <div>
+      <h1>HEY</h1>
+      <PackageTagForm />
+    </div>
+  </React.StrictMode>
+);
